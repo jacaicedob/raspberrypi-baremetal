@@ -1,0 +1,19 @@
+set(CMAKE_SYSTEM_NAME Generic)
+set(CMAKE_SYSTEM_PROCESSOR arm)
+
+set(CMAKE_C_COMPILER arm-none-eabi-gcc)
+set(CMAKE_ASM_COMPILER arm-none-eabi-gcc)
+set(CMAKE_OBJCOPY arm-none-eabi-objcopy)
+
+set(CMAKE_C_FLAGS "-mcpu=cortex-a53 -fpic -ffreestanding -nostdlib -nostartfiles")
+set(CMAKE_EXE_LINKER_FLAGS "-T${CMAKE_SOURCE_DIR}/boot/linker.ld -nostdlib")
+
+# No target filesystem to search — we're not linking against any OS libs
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY NEVER)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE NEVER)
+
+# Bare-metal targets can't run CMake's compiler-check test programs
+# (there's no OS to execute them under), so skip that step
+set(CMAKE_C_COMPILER_WORKS TRUE)
+set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
