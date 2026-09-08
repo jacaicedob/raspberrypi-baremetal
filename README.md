@@ -2,7 +2,7 @@
 
 Bare-metal firmware for the Raspberry Pi 3 Model B+ (BCM2837B0) — no Linux, no RTOS. Built with a cross-compiling `arm-none-eabi` toolchain, direct memory-mapped register access (GPIO, UART, timers), and a custom linker script/boot sequence written from the BCM2835/BCM2836 datasheets.
 
-This project is a companion to [`linux-low-level-protocols`](../linux-low-level-protocols), which covers the same peripherals (I2C, GPIO) from userspace on top of Linux. This project strips that away entirely — the code here runs directly on the ARM core from power-on, with no OS, no drivers, and no C runtime underneath it.
+This project is a companion to [`linux-low-level-protocols`](https://github.com/jacaicedob/linux-low-level-protocols), which covers the same peripherals (I2C, GPIO) from userspace on top of Linux. This project strips that away entirely — the code here runs directly on the ARM core from power-on, with no OS, no drivers, and no C runtime underneath it.
 
 ## Hardware
 
