@@ -1,0 +1,2 @@
+## Note on peripheral base address:
+ The BCM2835 datasheet documents offsets relative to `0x7E000000`, which is the GPU-side bus address. On this board (BCM2837B0), the ARM-side physical base is `0x3F000000`. I could not find any such reference in the documentation. Claude helped me here.
