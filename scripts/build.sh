@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 podman run --rm -v "$(pwd):/workspace:Z" raspberrypi-baremetal bash -c "
   mkdir -p build-arm64 && cd build-arm64 &&

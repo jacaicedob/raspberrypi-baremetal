@@ -7,7 +7,6 @@ set(CMAKE_OBJCOPY arm-none-eabi-objcopy)
 
 set(CMAKE_C_FLAGS "-mcpu=cortex-a53 -fpic -ffreestanding -nostdlib -nostartfiles")
 set(CMAKE_ASM_FLAGS "-mcpu=cortex-a53")
-set(CMAKE_EXE_LINKER_FLAGS "-T${CMAKE_SOURCE_DIR}/boot/linker.ld -nostdlib")
 
 # No target filesystem to search — we're not linking against any OS libs
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)

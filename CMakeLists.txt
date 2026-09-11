@@ -1,4 +1,9 @@
 cmake_minimum_required(VERSION 3.16)
-project(raspberrypi-baremetal C ASM)
+project(rpi_bm C ASM)
 
-add_subdirectory(apps)
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+
+add_subdirectory(src)
+add_subdirectory(boot)
+add_subdirectory(examples)
