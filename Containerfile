@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y \
     git \
     gdb-multiarch \
     qemu-system-arm \
+    clang-format \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /workspace
