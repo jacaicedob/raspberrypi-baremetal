@@ -17,15 +17,8 @@
 #define RPIBM_GPIO_ALTFN4 0x3
 #define RPIBM_GPIO_ALTFN5 0x2
 
-// public interface
 void rpibm_gpio_set_function(uint8_t pin, uint8_t function);
 void rpibm_gpio_set_high(uint8_t pin);
 void rpibm_gpio_set_low(uint8_t pin);
-
-// private
-static size_t function_register_offset(uint8_t pin);
-static size_t function_bit_offset(uint8_t pin);
-static size_t output_register_offset(uint8_t pin);
-static size_t output_bit_offset(uint8_t pin);
 
 #endif // RPIBM_GPIO_H

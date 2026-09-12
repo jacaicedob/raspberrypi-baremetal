@@ -9,7 +9,7 @@ Bare-metal library for the Raspberry Pi 3 Model B+ (BCM2837B0). This project is 
 - [x] Linker script + startup assembly (core parking, stack setup, `.bss` zeroing)
 - [x] GPIO register header (`bcm2837b0.h`) — GPFSEL/GPSET/GPCLR offsets
 - [x] First working program: `blink-led.c` — toggles GPIO 17/18 via direct register writes
-- [ ] Timer-driven (non-busy-wait) delays
+- [x] Timer-driven (non-busy-wait) delays
 - [ ] UART console output
 - [ ] Bit-banged protocol exercise (I2C or DHT11) on bare metal
 

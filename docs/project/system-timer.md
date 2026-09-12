@@ -1,0 +1,2 @@
+## Note on system timer:
+On real Raspberry Pi hardware, channels 0 and 2 are typically reserved/used internally by the GPU firmware (for its own scheduling), so bare-metal projects conventionally use channel 1 or channel 3 to avoid conflicting with firmware that's still running on the VideoCore side.

@@ -3,6 +3,11 @@
 #include <stdint.h>
 #include <stddef.h>
 
+static size_t function_register_offset(uint8_t pin);
+static size_t function_bit_offset(uint8_t pin);
+static size_t output_register_offset(uint8_t pin);
+static size_t output_bit_offset(uint8_t pin);
+
 void rpibm_gpio_set_function(uint8_t pin, uint8_t function)
 {
     volatile uint32_t *addr =
