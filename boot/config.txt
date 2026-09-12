@@ -1,2 +1,5 @@
 arm_64bit=0
 kernel=kernel7.img
+
+# From https://www.raspberrypi.com/documentation/computers/config_txt.html
+core_freq=250

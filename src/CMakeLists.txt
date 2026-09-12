@@ -2,7 +2,7 @@ add_library(rpi_bm
     STATIC
         gpio.c
         timer.c
-        # uart.c    # add once built
+        mini_uart.c  
 )
 
 target_include_directories(rpi_bm 

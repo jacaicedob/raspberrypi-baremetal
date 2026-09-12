@@ -10,7 +10,7 @@ Bare-metal library for the Raspberry Pi 3 Model B+ (BCM2837B0). This project is 
 - [x] GPIO register header (`bcm2837b0.h`) — GPFSEL/GPSET/GPCLR offsets
 - [x] First working program: `blink-led.c` — toggles GPIO 17/18 via direct register writes
 - [x] Timer-driven (non-busy-wait) delays
-- [ ] UART console output
+- [x] UART console output
 - [ ] Bit-banged protocol exercise (I2C or DHT11) on bare metal
 
 
@@ -98,3 +98,4 @@ Local copies are kept in `docs/reference` so the exact revisions used are pinned
 - [`docs/RP-008249-DS-1-bcm2835-peripherals.pdf`](docs/RP-008249-DS-1-bcm2835-peripherals.pdf) — GPIO, UART, System Timer register offsets (peripheral base differs per chip; see note below)
 - [`docs/RP-008250-DS-1-bcm2836-peripherals.pdf`](docs/RP-008250-DS-1-bcm2836-peripherals.pdf) — per-core interrupt controller, core timers, spin-table addresses (needed if/when releasing cores 1–3)
 - [Raspberry Pi: Processors documentation](https://www.raspberrypi.com/documentation/computers/processors.html) — chip lineage and which datasheet applies to which board
+- [BCM2835 Errata](https://elinux.org/BCM2835_datasheet_errata) - Always confirm with content here! I spend a LOT of time debugging before Claude told me the datasheet has bugs.

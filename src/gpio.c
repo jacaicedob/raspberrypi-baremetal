@@ -12,7 +12,14 @@ void rpibm_gpio_set_function(uint8_t pin, rpibm_gpio_function_t function)
 {
     volatile uint32_t *addr =
         (volatile uint32_t *)(RPIBM_GPIO_GPFSEL0_ADDR + function_register_offset(pin));
-    *addr = (uint32_t)(function << function_bit_offset(pin));
+
+    uint32_t shift = function_bit_offset(pin);
+    uint32_t clear_mask = ~(
+        0x7U << shift); // Create an inverse mask for the pin. When ANDed, it will clear these bits
+
+    // Read current value and only update the bits for the passed pin
+    uint32_t current = *addr;
+    *addr = (current & clear_mask) | ((uint32_t)function << shift);
 }
 
 void rpibm_gpio_set_high(uint8_t pin)
