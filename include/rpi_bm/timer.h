@@ -6,11 +6,13 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#define RPIBM_TIMER_CHANNEL1        1
-#define RPIBM_TIMER_CHANNEL3        3
-#define RPIBM_TIMER_CHANNEL_DEFAULT (RPIBM_TIMER_CHANNEL1)
+typedef enum {
+    RPIBM_TIMER_CHANNEL1 = 1,
+    RPIBM_TIMER_CHANNEL3 = 3,
+    RPIBM_TIMER_CHANNEL_DEFAULT = 1
+} rpibm_timer_channel_t;
 
 void rpibm_timer_delay_us(uint32_t microseconds); // Uses default channel
-void rpibm_timer_delay_us_ch(uint32_t microseconds, uint8_t timer);
+void rpibm_timer_delay_us_ch(uint32_t microseconds, rpibm_timer_channel_t timer);
 
 #endif // RPIBM_TIMER_H
