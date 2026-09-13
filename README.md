@@ -11,6 +11,10 @@ Bare-metal library for the Raspberry Pi 3 Model B+ (BCM2837B0). This project is 
 - [x] First working program: `blink-led.c` — toggles GPIO 17/18 via direct register writes
 - [x] Timer-driven (non-busy-wait) delays
 - [x] UART console output
+- [ ] HDMI output
+   - [ ] Mailbox protocol
+   - [ ] Display color gradient
+   - [ ] Font rendering
 - [ ] Bit-banged protocol exercise (I2C or DHT11) on bare metal
 
 
