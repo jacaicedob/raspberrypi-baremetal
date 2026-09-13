@@ -103,3 +103,7 @@ Local copies are kept in `docs/reference` so the exact revisions used are pinned
 - [`docs/RP-008250-DS-1-bcm2836-peripherals.pdf`](docs/RP-008250-DS-1-bcm2836-peripherals.pdf) — per-core interrupt controller, core timers, spin-table addresses (needed if/when releasing cores 1–3)
 - [Raspberry Pi: Processors documentation](https://www.raspberrypi.com/documentation/computers/processors.html) — chip lineage and which datasheet applies to which board
 - [BCM2835 Errata](https://elinux.org/BCM2835_datasheet_errata) - Always confirm with content here! I spend a LOT of time debugging before Claude told me the datasheet has bugs.
+- [Raspberry Pi Firmware](ttps://github.com/raspberrypi/firmware/wiki)
+- [Mailbox header file from u-boot project](https://git.u-boot-project.org/u-boot/u-boot/-/blob/master/arch/arm/mach-bcm283x/include/mach/mbox.h?ref_type=heads)
+- [BCM2836 header file from u-boot project](https://git.u-boot-project.org/u-boot/u-boot/-/blob/master/arch/arm/mach-bcm283x/include/mach/acpi/bcm2836.h?ref_type=heads)
+- [BCM2836 GPU header file from u-boot project](https://git.u-boot-project.org/u-boot/u-boot/-/blob/master/arch/arm/mach-bcm283x/include/mach/acpi/bcm2836_gpu.h?ref_type=heads)

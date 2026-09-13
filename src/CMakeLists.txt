@@ -1,8 +1,10 @@
 add_library(rpi_bm 
     STATIC
+        fmt.c
         gpio.c
-        timer.c
+        gpu_mbox.c
         mini_uart.c  
+        timer.c
 )
 
 target_include_directories(rpi_bm 
