@@ -12,8 +12,18 @@ Bare-metal library for the Raspberry Pi 3 Model B+ (BCM2837B0). This project is 
 - [x] Timer-driven (non-busy-wait) delays
 - [x] UART console output
 - [ ] HDMI output
-   - [ ] Mailbox protocol
+   - [x] Mailbox protocol
+   - [x] Read Tags (MAC Addr, FW Rev, etc)
    - [ ] Display color gradient
+      - [ ] Allocate frame buffer
+      - [ ] Get buffer pitch (bytes per line -- not necessarily width * bytes_per_pixel due to padding)
+      - [ ] Get physical display width and height
+      - [ ] Get/Set pixel order (BGR or RGB) 
+      - [ ] Write pixel data to allocated buffer
+   - [ ] Double buffering
+      - [ ] Allocate 2 frame buffers
+      - [ ] Write to non-active buffer
+      - [ ] Swap active buffer during vsync
    - [ ] Font rendering
 - [ ] Bit-banged protocol exercise (I2C or DHT11) on bare metal
 
