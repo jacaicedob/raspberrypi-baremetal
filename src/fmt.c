@@ -1,8 +1,16 @@
 #include "rpi_bm/fmt.h"
+#include <stddef.h>
 
 void rpibm_fmt_itoa(uint32_t value, rpibm_fmt_base_t base, char *output)
 {
-    char    intermediate[100];
+    rpibm_fmt_itoa_zeropad(value, base, output, 0);
+}
+
+void rpibm_fmt_itoa_zeropad(uint32_t value, rpibm_fmt_base_t base, char *output,
+                            uint8_t zero_pad_width)
+{
+    char intermediate[100];
+
     uint8_t count = 0;
 
     for (;;) {
@@ -21,6 +29,12 @@ void rpibm_fmt_itoa(uint32_t value, rpibm_fmt_base_t base, char *output)
         if (value == 0) {
             break;
         }
+    }
+
+    // Zero pad if count < zero_pad_width
+    for (size_t i = count; i < zero_pad_width; ++i) {
+        intermediate[count] = (char)0x30;
+        ++count;
     }
 
     // Reverse string

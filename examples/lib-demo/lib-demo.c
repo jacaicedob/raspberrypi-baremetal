@@ -5,6 +5,7 @@
 #include "rpi_bm/mini_uart.h"
 
 #include <stdint.h>
+#include <stddef.h>
 #include <stdio.h>
 
 void main(void)
@@ -24,15 +25,26 @@ void main(void)
     rpibm_mini_uart_init(115200U);
     rpibm_mini_uart_print("Hello, World!\n");
 
-    uint32_t fw_version;
-    rpibm_gpu_mbox_get_fw_version(&fw_version);
-    rpibm_fmt_itoa(fw_version, RPIBM_FMT_BASE_HEX, buffer);
-    rpibm_mini_uart_print("FW Version: 0x");
+    int32_t fw_revision;
+    rpibm_gpu_mbox_get_fw_version(&fw_revision);
+    rpibm_fmt_itoa(fw_revision, RPIBM_FMT_BASE_HEX, buffer);
+    rpibm_mini_uart_print("FW Revision: 0x");
     rpibm_mini_uart_print(buffer);
     rpibm_mini_uart_print("\n");
-    rpibm_fmt_itoa(fw_version, RPIBM_FMT_BASE_DEC, buffer);
-    rpibm_mini_uart_print("FW Version: ");
+    rpibm_fmt_itoa(fw_revision, RPIBM_FMT_BASE_DEC, buffer);
+    rpibm_mini_uart_print("FW Revision: ");
     rpibm_mini_uart_print(buffer);
+    rpibm_mini_uart_print("\n");
+
+    uint8_t mac_address[6];
+    rpibm_gpu_mbox_get_mac_address(mac_address);
+
+    rpibm_mini_uart_print("MAC Addr: ");
+    for (size_t i = 0; i < sizeof(mac_address); ++i) {
+        rpibm_fmt_itoa_zeropad(mac_address[i], RPIBM_FMT_BASE_HEX, buffer, 2);
+        rpibm_mini_uart_print(buffer);
+        rpibm_mini_uart_print(" ");
+    }
     rpibm_mini_uart_print("\n");
 
     while (1) {
