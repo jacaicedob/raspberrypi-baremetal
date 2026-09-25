@@ -55,6 +55,14 @@ To write to a mailbox
     1. Read the status register until the full flag is not set
     2. Write the data (shifted into the upper 28 bits) combined with the channel (in the lower four bits) to the write register
 
+For each tag type:
+    1. Create a struct for the tag and fill out the request values. Make sure its memory aligned to 16 bits
+    2. Get the address of this struct, pack the channel number in the lower bits, and write it to the MBOX_WRITE_ADDR.
+    3. Wait for the read flag in MBOX_STATUS_ADDR
+    4. Read from MBOX_READ_ADDR and validate the response is for the channel
+    5. Read the data from the struct created in 1.
+
+
 ##Addresses as data
 
 **With the exception of the property tags mailbox channel**, *when passing memory addresses as the data part of a mailbox message, the addresses should be bus addresses as seen from the VC*. These vary depending on whether the L2 cache is enabled. If it is, <u>physical memory is mapped to start at 0x40000000 by the VC MMU; if L2 caching is disabled, physical memory is mapped to start at 0xC0000000 by the VC MMU</u>. Returned addresses (both those returned in the data part of the mailbox response and any written into the buffer you passed) will also be as mapped by the VC MMU. In the exceptional case when you are using the property tags mailbox channel you should send and receive physical addresses (the same as you'd see from the ARM before enabling the MMU).

@@ -134,3 +134,89 @@ void rpibm_gpu_mbox_get_mac_address(uint8_t *mac_address)
         }
     }
 }
+
+void rpibm_gpu_mbox_allocate_frame_buffer(struct rpibm_frame_buffer *frame_buffer)
+{
+    struct rpibm_gpu_mbox_allocate_frame_buffer_message msg __attribute__((aligned(16)));
+    msg.header.buf_size = sizeof(msg);
+    msg.header.code = 0x0; // Request
+    // Set Physical Size tag
+    msg.set_physical_size_tag.tag_hdr.tag = 0x48003;
+    msg.set_physical_size_tag.tag_hdr.val_buf_size = sizeof(msg.set_physical_size_tag.body);
+    msg.set_physical_size_tag.tag_hdr.val_len = sizeof(msg.set_physical_size_tag.body.request);
+    msg.set_physical_size_tag.body.request.height = frame_buffer->phy_height;
+    msg.set_physical_size_tag.body.request.width = frame_buffer->phy_width;
+    // Set Virtual Size tag
+    msg.set_virtual_size_tag.tag_hdr.tag = 0x48004;
+    msg.set_virtual_size_tag.tag_hdr.val_buf_size = sizeof(msg.set_virtual_size_tag.body);
+    msg.set_virtual_size_tag.tag_hdr.val_len = sizeof(msg.set_virtual_size_tag.body.request);
+    msg.set_virtual_size_tag.body.request.height = frame_buffer->virt_height;
+    msg.set_virtual_size_tag.body.request.width = frame_buffer->virt_width;
+    // Set Depth tag
+    msg.set_depth_tag.tag_hdr.tag = 0x48005;
+    msg.set_depth_tag.tag_hdr.val_buf_size = sizeof(msg.set_depth_tag.body);
+    msg.set_depth_tag.tag_hdr.val_len = sizeof(msg.set_depth_tag.body.request);
+    msg.set_depth_tag.body.request.depth = frame_buffer->depth;
+    // Allocate buffer tag
+    msg.allocate_frame_buffer_tag.tag_hdr.tag = 0x40001;
+    msg.allocate_frame_buffer_tag.tag_hdr.val_buf_size = sizeof(msg.allocate_frame_buffer_tag.body);
+    msg.allocate_frame_buffer_tag.tag_hdr.val_len =
+        sizeof(msg.allocate_frame_buffer_tag.body.request);
+    msg.allocate_frame_buffer_tag.body.request.alignment = 16;
+    msg.end_tag = 0x0;
+
+    rpibm_gpu_mbox_clear_responses();
+    rpibm_gpu_mbox_wait_write_not_full();
+    rpibm_gpu_mbox_send_request(RPIBM_MBOX_PROPERTY_TAGS_CH, (uint32_t)&msg);
+    rpibm_gpu_mbox_wait_read_empty();
+
+    struct rpibm_gpu_mbox_read_response_struct response;
+    rpibm_gpu_mbox_read_response(RPIBM_MBOX_PROPERTY_TAGS_CH, &response);
+    if (response.valid) {
+        // Populate struct with actual values set by HW (could be different than request)
+        frame_buffer->phy_height = msg.set_physical_size_tag.body.response.height;
+        frame_buffer->phy_height = msg.set_physical_size_tag.body.response.height;
+        frame_buffer->virt_width = msg.set_virtual_size_tag.body.response.width;
+        frame_buffer->virt_width = msg.set_virtual_size_tag.body.response.width;
+        frame_buffer->depth = msg.set_depth_tag.body.response.depth;
+        frame_buffer->buffer_size = msg.allocate_frame_buffer_tag.body.response.size;
+        frame_buffer->buffer =
+            (uint32_t *)(msg.allocate_frame_buffer_tag.body.response.base_address & 0x3FFFFFFF);
+
+    } else {
+        frame_buffer->phy_height = 0;
+        frame_buffer->phy_height = 0;
+        frame_buffer->virt_width = 0;
+        frame_buffer->virt_width = 0;
+        frame_buffer->depth = 0;
+        frame_buffer->buffer_size = 0;
+        frame_buffer->buffer = NULL;
+    }
+}
+void rpibm_gpu_mbox_get_pitch(struct rpibm_frame_buffer *frame_buffer)
+{
+    struct rpibm_gpu_mbox_get_pitch_message msg __attribute__((aligned(16)));
+    msg.header.buf_size = sizeof(msg);
+    msg.header.code = 0x0; // Request
+    // Get pitch tag
+    msg.get_pitch_tag.tag_hdr.tag = 0x40008;
+    msg.get_pitch_tag.tag_hdr.val_buf_size = sizeof(msg.get_pitch_tag.body);
+    msg.get_pitch_tag.tag_hdr.val_len = sizeof(msg.get_pitch_tag.body.request);
+
+    msg.end_tag = 0x0;
+
+    rpibm_gpu_mbox_clear_responses();
+    rpibm_gpu_mbox_wait_write_not_full();
+    rpibm_gpu_mbox_send_request(RPIBM_MBOX_PROPERTY_TAGS_CH, (uint32_t)&msg);
+    rpibm_gpu_mbox_wait_read_empty();
+
+    struct rpibm_gpu_mbox_read_response_struct response;
+    rpibm_gpu_mbox_read_response(RPIBM_MBOX_PROPERTY_TAGS_CH, &response);
+    if (response.valid) {
+        // Populate struct with actual values set by HW (could be different than request)
+        frame_buffer->pitch = msg.get_pitch_tag.body.response.pitch;
+
+    } else {
+        frame_buffer->pitch = 0;
+    }
+}
