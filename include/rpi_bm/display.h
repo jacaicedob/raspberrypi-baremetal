@@ -8,5 +8,9 @@
 void rpibm_display_init(struct rpibm_frame_buffer *frame_buffer);
 void rpibm_display_horizontal_gradient_grayscale(struct rpibm_frame_buffer *frame_buffer);
 void rpibm_display_horizontal_gradient_rainbow(struct rpibm_frame_buffer *frame_buffer);
+void rpibm_display_horizontal_gradient_grayscale_offset(struct rpibm_frame_buffer *frame_buffer,
+                                                        uint32_t                   offset);
+void rpibm_display_horizontal_gradient_rainbow_offset(struct rpibm_frame_buffer *frame_buffer,
+                                                      uint32_t                   offset);
 
 #endif // RPIBM_DISPLAY_H

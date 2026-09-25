@@ -117,6 +117,21 @@ struct rpibm_gpu_mbox_tag_set_depth {
     } body;
 };
 
+// Strcut for Set Virtual offset
+struct rpibm_gpu_mbox_tag_set_virtual_offset {
+    struct rpibm_gpu_mbox_tag_header tag_hdr;
+    union {
+        struct {
+            uint32_t x;
+            uint32_t y;
+        } request;
+        struct {
+            uint32_t x;
+            uint32_t y;
+        } response;
+    } body;
+};
+
 // Strcut for Get Pitch
 struct rpibm_gpu_mbox_tag_get_pitch {
     struct rpibm_gpu_mbox_tag_header tag_hdr;
@@ -169,7 +184,14 @@ struct rpibm_gpu_mbox_get_pitch_message {
     uint32_t                            end_tag;
 };
 
+struct rpibm_gpu_mbox_set_virtual_offset_message {
+    struct rpibm_gpu_mbox_header                 header;
+    struct rpibm_gpu_mbox_tag_set_virtual_offset set_virutal_offset_tag;
+    uint32_t                                     end_tag;
+};
+
 void rpibm_gpu_mbox_allocate_frame_buffer(struct rpibm_frame_buffer *frame_buffer);
 void rpibm_gpu_mbox_get_pitch(struct rpibm_frame_buffer *frame_buffer);
+void rpibm_gpu_mbox_set_virtual_offset(uint32_t x, uint32_t y);
 
 #endif // RPIBM_MBOX_H

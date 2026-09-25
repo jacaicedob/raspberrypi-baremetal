@@ -52,16 +52,23 @@ void main(void)
 
     // Allocate frame buffer from GPU
     struct rpibm_frame_buffer frame_buffer;
-    frame_buffer.phy_height = 1024;
-    frame_buffer.phy_width = 1280;
-    frame_buffer.virt_height = 1024;
-    frame_buffer.virt_width = 1280;
+    frame_buffer.phy_width = 1920;
+    frame_buffer.phy_height = 1080;
+    frame_buffer.virt_width = frame_buffer.phy_width;
+    frame_buffer.virt_height = 2 * frame_buffer.phy_height;
     frame_buffer.depth = 32;
 
+    rpibm_mini_uart_print("Initializing frame buffer\n");
     rpibm_display_init(&frame_buffer);
-    rpibm_display_horizontal_gradient_rainbow(&frame_buffer);
+    rpibm_mini_uart_print("Drawing rainbow gradient\n");
+    rpibm_display_horizontal_gradient_rainbow_offset(&frame_buffer, 0);
+    rpibm_mini_uart_print("Drawing grayscale gradient\n");
+    rpibm_display_horizontal_gradient_grayscale_offset(&frame_buffer, frame_buffer.buffer_size / 2);
+
+    size_t counter = 0;
 
     // Blink LEDs
+    rpibm_mini_uart_print("Blinking LEDs\n");
     while (1) {
         // Set pins to high
         for (int i = 0; i < 2; ++i) {
@@ -77,5 +84,13 @@ void main(void)
         }
 
         rpibm_timer_delay_us(sleep_us);
+
+        if ((counter % 2) == 0) {
+            rpibm_gpu_mbox_set_virtual_offset(0, frame_buffer.phy_height);
+        } else {
+
+            rpibm_gpu_mbox_set_virtual_offset(0, 0);
+        }
+        ++counter;
     }
 }

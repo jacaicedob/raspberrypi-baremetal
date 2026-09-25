@@ -175,8 +175,8 @@ void rpibm_gpu_mbox_allocate_frame_buffer(struct rpibm_frame_buffer *frame_buffe
     if (response.valid) {
         // Populate struct with actual values set by HW (could be different than request)
         frame_buffer->phy_height = msg.set_physical_size_tag.body.response.height;
-        frame_buffer->phy_height = msg.set_physical_size_tag.body.response.height;
-        frame_buffer->virt_width = msg.set_virtual_size_tag.body.response.width;
+        frame_buffer->phy_width = msg.set_physical_size_tag.body.response.width;
+        frame_buffer->virt_height = msg.set_virtual_size_tag.body.response.height;
         frame_buffer->virt_width = msg.set_virtual_size_tag.body.response.width;
         frame_buffer->depth = msg.set_depth_tag.body.response.depth;
         frame_buffer->buffer_size = msg.allocate_frame_buffer_tag.body.response.size;
@@ -185,8 +185,8 @@ void rpibm_gpu_mbox_allocate_frame_buffer(struct rpibm_frame_buffer *frame_buffe
 
     } else {
         frame_buffer->phy_height = 0;
-        frame_buffer->phy_height = 0;
-        frame_buffer->virt_width = 0;
+        frame_buffer->phy_width = 0;
+        frame_buffer->virt_height = 0;
         frame_buffer->virt_width = 0;
         frame_buffer->depth = 0;
         frame_buffer->buffer_size = 0;
@@ -218,5 +218,31 @@ void rpibm_gpu_mbox_get_pitch(struct rpibm_frame_buffer *frame_buffer)
 
     } else {
         frame_buffer->pitch = 0;
+    }
+}
+
+void rpibm_gpu_mbox_set_virtual_offset(uint32_t x, uint32_t y)
+{
+    struct rpibm_gpu_mbox_set_virtual_offset_message msg __attribute__((aligned(16)));
+    msg.header.buf_size = sizeof(msg);
+    msg.header.code = 0x0; // Request
+    // Set virtual offset tag
+    msg.set_virutal_offset_tag.tag_hdr.tag = 0x48009;
+    msg.set_virutal_offset_tag.tag_hdr.val_buf_size = sizeof(msg.set_virutal_offset_tag.body);
+    msg.set_virutal_offset_tag.tag_hdr.val_len = sizeof(msg.set_virutal_offset_tag.body.request);
+    msg.set_virutal_offset_tag.body.request.x = x;
+    msg.set_virutal_offset_tag.body.request.y = y;
+
+    msg.end_tag = 0x0;
+
+    rpibm_gpu_mbox_clear_responses();
+    rpibm_gpu_mbox_wait_write_not_full();
+    rpibm_gpu_mbox_send_request(RPIBM_MBOX_PROPERTY_TAGS_CH, (uint32_t)&msg);
+    rpibm_gpu_mbox_wait_read_empty();
+
+    struct rpibm_gpu_mbox_read_response_struct response;
+    rpibm_gpu_mbox_read_response(RPIBM_MBOX_PROPERTY_TAGS_CH, &response);
+    if (response.valid) {
+    } else {
     }
 }

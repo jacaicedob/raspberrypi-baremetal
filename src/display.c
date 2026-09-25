@@ -42,9 +42,16 @@ void rpibm_display_init(struct rpibm_frame_buffer *frame_buffer)
 
 void rpibm_display_horizontal_gradient_grayscale(struct rpibm_frame_buffer *frame_buffer)
 {
-    for (uint32_t row = 0; row < frame_buffer->virt_height; ++row) {
-        uint32_t row_offset = (uint32_t)(frame_buffer->buffer + (row * frame_buffer->pitch));
-        for (uint32_t col = 0; col < frame_buffer->virt_width; ++col) {
+    rpibm_display_horizontal_gradient_grayscale_offset(frame_buffer, 0);
+}
+
+void rpibm_display_horizontal_gradient_grayscale_offset(struct rpibm_frame_buffer *frame_buffer,
+                                                        uint32_t                   offset)
+{
+    uint8_t *base_offset = (uint8_t *)(frame_buffer->buffer) + offset;
+    for (uint32_t row = 0; row < frame_buffer->phy_height; ++row) {
+        uint32_t row_offset = (uint32_t)(base_offset + (row * frame_buffer->pitch));
+        for (uint32_t col = 0; col < frame_buffer->phy_width; ++col) {
             uint32_t pixel_offset = row_offset + col * (frame_buffer->depth / 8);
             uint8_t  r = (col % 256);
             uint8_t  g = (col % 256);
@@ -57,11 +64,18 @@ void rpibm_display_horizontal_gradient_grayscale(struct rpibm_frame_buffer *fram
 
 void rpibm_display_horizontal_gradient_rainbow(struct rpibm_frame_buffer *frame_buffer)
 {
+    rpibm_display_horizontal_gradient_rainbow_offset(frame_buffer, 0);
+}
+
+void rpibm_display_horizontal_gradient_rainbow_offset(struct rpibm_frame_buffer *frame_buffer,
+                                                      uint32_t                   offset)
+{
     uint32_t max_hue = 256 * 6;
 
-    for (uint32_t row = 0; row < frame_buffer->virt_height; ++row) {
-        uint32_t row_offset = (uint32_t)(frame_buffer->buffer + (row * frame_buffer->pitch));
-        for (uint32_t col = 0; col < frame_buffer->virt_width; ++col) {
+    uint8_t *base_offset = (uint8_t *)(frame_buffer->buffer) + offset;
+    for (uint32_t row = 0; row < frame_buffer->phy_height; ++row) {
+        uint32_t row_offset = (uint32_t)(base_offset + (row * frame_buffer->pitch));
+        for (uint32_t col = 0; col < frame_buffer->phy_width; ++col) {
             uint32_t pixel_offset = row_offset + col * (frame_buffer->depth / 8);
             uint8_t  alpha = 0xFF;
             uint32_t hue = col % max_hue;
