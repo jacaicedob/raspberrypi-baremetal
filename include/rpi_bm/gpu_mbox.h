@@ -144,14 +144,14 @@ struct rpibm_gpu_mbox_tag_allocate_frame_buffer {
 };
 
 struct rpibm_frame_buffer {
-    uint32_t  phy_width;
-    uint32_t  phy_height;
-    uint32_t  virt_width;
-    uint32_t  virt_height;
-    uint32_t  depth;
-    uint32_t  pitch;
-    uint32_t  buffer_size;
-    uint32_t *buffer;
+    uint32_t phy_width;
+    uint32_t phy_height;
+    uint32_t virt_width;
+    uint32_t virt_height;
+    uint32_t depth;
+    uint32_t pitch;
+    uint32_t buffer_size;
+    uint8_t *buffer;
 };
 
 struct rpibm_gpu_mbox_allocate_frame_buffer_message {

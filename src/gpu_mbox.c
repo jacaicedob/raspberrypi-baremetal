@@ -181,7 +181,7 @@ void rpibm_gpu_mbox_allocate_frame_buffer(struct rpibm_frame_buffer *frame_buffe
         frame_buffer->depth = msg.set_depth_tag.body.response.depth;
         frame_buffer->buffer_size = msg.allocate_frame_buffer_tag.body.response.size;
         frame_buffer->buffer =
-            (uint32_t *)(msg.allocate_frame_buffer_tag.body.response.base_address & 0x3FFFFFFF);
+            (uint8_t *)(msg.allocate_frame_buffer_tag.body.response.base_address & 0x3FFFFFFF);
 
     } else {
         frame_buffer->phy_height = 0;
