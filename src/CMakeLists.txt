@@ -5,6 +5,7 @@ add_library(rpi_bm
         gpu_mbox.c
         mini_uart.c  
         timer.c
+        display.c
 )
 
 target_include_directories(rpi_bm 
