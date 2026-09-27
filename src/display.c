@@ -46,9 +46,10 @@ void rpibm_display_horizontal_gradient_grayscale(struct rpibm_frame_buffer *fram
 }
 
 void rpibm_display_horizontal_gradient_grayscale_offset(struct rpibm_frame_buffer *frame_buffer,
-                                                        uint32_t                   offset)
+                                                        uint32_t frame_buffer_index)
 {
-    uint8_t *base_offset = (uint8_t *)(frame_buffer->buffer) + offset;
+    uint8_t *base_offset =
+        (uint8_t *)(frame_buffer->buffer) + (frame_buffer_index * (frame_buffer->buffer_size / 2));
     for (uint32_t row = 0; row < frame_buffer->phy_height; ++row) {
         uint32_t row_offset = (uint32_t)(base_offset + (row * frame_buffer->pitch));
         for (uint32_t col = 0; col < frame_buffer->phy_width; ++col) {
@@ -64,50 +65,58 @@ void rpibm_display_horizontal_gradient_grayscale_offset(struct rpibm_frame_buffe
 
 void rpibm_display_horizontal_gradient_rainbow(struct rpibm_frame_buffer *frame_buffer)
 {
-    rpibm_display_horizontal_gradient_rainbow_offset(frame_buffer, 0);
+    rpibm_display_horizontal_gradient_rainbow_offset(frame_buffer, 0, 0);
 }
 
 void rpibm_display_horizontal_gradient_rainbow_offset(struct rpibm_frame_buffer *frame_buffer,
-                                                      uint32_t                   offset)
+                                                      uint32_t                   frame_buffer_index,
+                                                      uint32_t                   phase_offset)
 {
-    uint32_t max_hue = 256 * 6;
+    // Pre compute hue values per column
+    uint32_t color_lut[RPIBM_DISPLAY_MAX_WIDTH];
+    for (uint32_t col = 0; col < frame_buffer->phy_width; ++col) {
+        uint8_t  alpha = 0xFF;
+        uint32_t hue = (col + phase_offset) % RPIBM_DISPLAY_MAX_HUE;
 
-    uint8_t *base_offset = (uint8_t *)(frame_buffer->buffer) + offset;
+        uint8_t r, g, b;
+        if (hue < 256) {
+            r = 255;
+            b = 0;
+            g = hue;
+        } else if (hue < 512) {
+            r = (255 - (hue - 256));
+            b = 0;
+            g = 255;
+        } else if (hue < 768) {
+            r = 0;
+            b = hue - 512;
+            g = 255;
+        } else if (hue < 1024) {
+            r = 0;
+            b = 255;
+            g = (255 - (hue - 768));
+        } else if (hue < 1280) {
+            r = hue - 1024;
+            b = 255;
+            g = 0;
+        } else if (hue < RPIBM_DISPLAY_MAX_HUE) {
+            r = 255;
+            b = (255 - (hue - 1280));
+            g = 0;
+        }
+        color_lut[col] = alpha << 24 | r << 16 | g << 8 | b;
+    }
+
+    // Write to frame buffer
+    uint8_t *base_offset =
+        (uint8_t *)(frame_buffer->buffer) + (frame_buffer_index * (frame_buffer->buffer_size / 2));
+
     for (uint32_t row = 0; row < frame_buffer->phy_height; ++row) {
         uint32_t row_offset = (uint32_t)(base_offset + (row * frame_buffer->pitch));
         for (uint32_t col = 0; col < frame_buffer->phy_width; ++col) {
             uint32_t pixel_offset = row_offset + col * (frame_buffer->depth / 8);
-            uint8_t  alpha = 0xFF;
-            uint32_t hue = col % max_hue;
 
-            uint8_t r, g, b;
-            if (hue < 256) {
-                r = 255;
-                b = 0;
-                g = hue;
-            } else if (hue < 512) {
-                r = (255 - (hue - 256));
-                b = 0;
-                g = 255;
-            } else if (hue < 768) {
-                r = 0;
-                b = hue - 512;
-                g = 255;
-            } else if (hue < 1024) {
-                r = 0;
-                b = 255;
-                g = (255 - (hue - 768));
-            } else if (hue < 1280) {
-                r = hue - 768;
-                b = 255;
-                g = 0;
-            } else if (hue < max_hue) {
-                r = 255;
-                b = (255 - (hue - 1280));
-                g = 0;
-            }
-
-            *(uint32_t *)pixel_offset = alpha << 24 | r << 16 | g << 8 | b;
+            *(uint32_t *)pixel_offset = color_lut[col];
         }
     }
 }

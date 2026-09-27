@@ -12,7 +12,7 @@
 void main(void)
 {
     char     buffer[256];
-    uint32_t sleep_us = 500000U;
+    uint32_t led_sleep_us = 500000U;
     uint8_t  pins[2];
     pins[0] = 19;
     pins[1] = 26;
@@ -52,45 +52,50 @@ void main(void)
 
     // Allocate frame buffer from GPU
     struct rpibm_frame_buffer frame_buffer;
-    frame_buffer.phy_width = 1920;
-    frame_buffer.phy_height = 1080;
+    frame_buffer.phy_width = 640;
+    frame_buffer.phy_height = 480;
     frame_buffer.virt_width = frame_buffer.phy_width;
     frame_buffer.virt_height = 2 * frame_buffer.phy_height;
     frame_buffer.depth = 32;
 
     rpibm_mini_uart_print("Initializing frame buffer\n");
     rpibm_display_init(&frame_buffer);
-    rpibm_mini_uart_print("Drawing rainbow gradient\n");
-    rpibm_display_horizontal_gradient_rainbow_offset(&frame_buffer, 0);
-    rpibm_mini_uart_print("Drawing grayscale gradient\n");
-    rpibm_display_horizontal_gradient_grayscale_offset(&frame_buffer, frame_buffer.buffer_size / 2);
 
-    size_t counter = 0;
+    size_t   counter = 0;
+    uint32_t phase_offset = counter;
+    uint32_t frame_buffer_index = counter;
 
     // Blink LEDs
     rpibm_mini_uart_print("Blinking LEDs\n");
+    uint8_t led_state = 0; // OFF
     while (1) {
-        // Set pins to high
-        for (int i = 0; i < 2; ++i) {
-            uint8_t pin = pins[i];
-            rpibm_gpio_set_high(pin);
-        }
-        rpibm_timer_delay_us(sleep_us);
-
-        // Set pins to low
-        for (int i = 0; i < 2; ++i) {
-            uint8_t pin = pins[i];
-            rpibm_gpio_set_low(pin);
-        }
-
-        rpibm_timer_delay_us(sleep_us);
-
-        if ((counter % 2) == 0) {
-            rpibm_gpu_mbox_set_virtual_offset(0, frame_buffer.phy_height);
+        if (led_state == 0) {
+            // Set pins to high
+            for (int i = 0; i < 2; ++i) {
+                uint8_t pin = pins[i];
+                rpibm_gpio_set_high(pin);
+            }
+            led_state = ~led_state;
         } else {
-
-            rpibm_gpu_mbox_set_virtual_offset(0, 0);
+            // Set pins to low
+            for (int i = 0; i < 2; ++i) {
+                uint8_t pin = pins[i];
+                rpibm_gpio_set_low(pin);
+            }
+            led_state = ~led_state;
         }
-        ++counter;
+        // rpibm_timer_delay_us(led_sleep_us);
+        frame_buffer_index = (counter++) % 2;
+        phase_offset = (phase_offset + 1) % RPIBM_DISPLAY_MAX_HUE;
+        rpibm_mini_uart_print("Drawing on frame buffer ");
+        rpibm_fmt_itoa(frame_buffer_index, RPIBM_FMT_BASE_DEC, buffer);
+        rpibm_mini_uart_print(buffer);
+        rpibm_mini_uart_print(" with offet ");
+        rpibm_fmt_itoa(phase_offset, RPIBM_FMT_BASE_DEC, buffer);
+        rpibm_mini_uart_print(buffer);
+        rpibm_display_horizontal_gradient_rainbow_offset(&frame_buffer, frame_buffer_index,
+                                                         phase_offset);
+        rpibm_mini_uart_print("\nSwapping frame buffers\n");
+        rpibm_gpu_mbox_set_virtual_offset(0, frame_buffer_index * frame_buffer.phy_height);
     }
 }

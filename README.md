@@ -11,7 +11,7 @@ Bare-metal library for the Raspberry Pi 3 Model B+ (BCM2837B0). This project is 
 - [x] First working program: `blink-led.c` — toggles GPIO 17/18 via direct register writes
 - [x] Timer-driven (non-busy-wait) delays
 - [x] UART console output
-- [ ] HDMI output
+- [x] HDMI output
    - [x] Mailbox protocol
    - [x] Read Tags (MAC Addr, FW Rev, etc)
    - [x] Display color gradient
@@ -19,13 +19,28 @@ Bare-metal library for the Raspberry Pi 3 Model B+ (BCM2837B0). This project is 
       - [x] Get buffer pitch (bytes per line -- not necessarily width * bytes_per_pixel due to padding)
       - [x] Get physical display width and height
       - [x] Write pixel data to allocated buffer
-   - [ ] Double buffering
-      - [ ] Allocate 2 frame buffers
-      - [ ] Write to non-active buffer
-      - [ ] Swap active buffer during vsync
-   - [ ] Font rendering
-- [ ] Bit-banged protocol exercise (I2C or DHT11) on bare metal
+   - [x] Double buffering
+      - [x] Allocate 2 frame buffers
+      - [x] Write to non-active buffer
+      - [x] Swap active buffer during vsync
 
+### Toward a bare-metal 2D game (separate project, this library as its foundation)
+
+- [ ] USB keyboard input
+  - [ ] DWC2 USB host controller bring-up
+  - [ ] Device enumeration
+  - [ ] HID report descriptor parsing (keypress decoding)
+- [ ] Sprite blitting
+  - [ ] `draw_sprite(x, y, sprite_data)` primitive
+  - [ ] Transparency / color-keying support
+- [ ] Game loop / frame timing primitive
+  - [ ] Fixed-interval frame pacing (accounting for per-frame logic time, not a blind delay)
+- [ ] Basic audio (PWM-based tone/beep output)
+- [ ] Font rendering (bitmap font for on-screen text/UI/score — shared with the item above)
+
+### Graphics improvements
+- [ ] Set core_freq=400 in config.txt
+   - [ ] Move from mini UART to UART0 (ARM PL011) for debug output via UART
 
 ## Hardware
 
